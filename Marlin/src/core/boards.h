@@ -465,7 +465,12 @@
 // Custom board
 //
 
-#define BOARD_CUSTOM                  9998  // Custom pins definition for development and/or rare boards
+//
+// WEEDOO_83B
+//
+
+#define BOARD_WEEDO_83B               9998  // WEEDO 83B
+//#define BOARD_CUSTOM                  9998  // Custom pins definition for development and/or rare boards
 
 //
 // Simulations

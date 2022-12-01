@@ -765,6 +765,9 @@
 #elif MB(BRICOLEMON_LITE_V1_0)
   #include "samd/pins_BRICOLEMON_LITE_V1_0.h"   // SAMD51                                 env:SAMD51_grandcentral_m4
 
+#elif MB(WEEDO_83B)
+  #include "pins_WEEDO_83B.h"                   // WEEDO_83B                              env:WEEDOR83
+
 //
 // Custom board (with custom PIO env)
 //
