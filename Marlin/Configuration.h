@@ -3205,6 +3205,7 @@
 #define WTGL_LCD
 #if ENABLED(WTGL_LCD)
   #define DMA_RX_SUPPORT
+  #define LCD_BAUDRATE 115200
 #endif
 //=============================================================================
 //=============================== Extra Features ==============================
