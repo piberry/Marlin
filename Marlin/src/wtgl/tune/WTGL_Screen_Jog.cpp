@@ -13,7 +13,7 @@
 void WTGL_Screen_Jog::Init()
 {
 	gserial.LoadScreen(SCREEN_JOG);
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 
     endstops.enable(true); 
 }
@@ -40,7 +40,7 @@ void WTGL_Screen_Jog::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_leng
         queue.enqueue_now_P(PSTR("M410"));
     }
 
-    if (queue.length >= BUFSIZE - 2) return;
+    if (queue.ring_buffer.length >= BUFSIZE - 2) return;
 
     if (addr == VAR_JOG_X3)
     {

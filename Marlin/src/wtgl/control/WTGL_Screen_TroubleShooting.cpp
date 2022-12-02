@@ -14,7 +14,7 @@
 void WTGL_Screen_TroubleShooting::Init()
 {
 	gserial.LoadScreen(SCREEN_DIAG);
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 	updaterate = 200;
 	pageid = 0;
 	endstops.enable(true); 

@@ -7,9 +7,9 @@
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
 #include "../../module/planner.h"
-#include "WTGL_Screen_Filament.h"
 #include "../WTGL_Serial.h"
 #include "../WTGL_Manager.h"
+#include "WTGL_Screen_Filament.h"
 
 void WTGL_Screen_Filament::Init()
 {
@@ -17,7 +17,7 @@ void WTGL_Screen_Filament::Init()
 
 	filamentType = 0;
 	filaopsts = FSSE_CHOICETYPE;
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 }
 
 void WTGL_Screen_Filament::Update()

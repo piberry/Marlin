@@ -49,7 +49,7 @@ void InPacket::Receiver(uint8_t b)
 		if (b == START_BYTE) 	
 		{
 			state = PS_LEN;	
-            timeout = getcurrenttime() + RECEIVE_TIMEOUT;	
+            timeout = wtgl.getcurrenttime() + RECEIVE_TIMEOUT;	
 		} 
 	} 
 	else if (state == PS_LEN) 
@@ -185,7 +185,7 @@ void OutPacket::payload_append_string(const char* str)
 
 bool InPacket::isTimeout(void)
 {
-    if (getcurrenttime() > timeout)
+    if (wtgl.getcurrenttime() > timeout)
         return true;
     else
         return false;

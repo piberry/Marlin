@@ -6,12 +6,13 @@
 #include "../WTGL_Serial.h"
 #include "../../MarlinCore.h"
 #include "../../module/stepper.h"
+#include "../WTGL_Manager.h"
 
 void WTGL_Screen_MotorOff::Init()
 {
     ShowMotorState();
     gserial.LoadScreen(SCREEN_MOTOR);
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 }
 
 void WTGL_Screen_MotorOff::Update()
@@ -39,11 +40,11 @@ void WTGL_Screen_MotorOff::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data
     }
     else if (addr == VAR_MOTOR_E)
     {
-        disable_e_steppers();
+        stepper.disable_e_steppers();
     }
     else if (addr == VAR_MOTOR_ALL)
     {
-        disable_all_steppers();
+        stepper.disable_all_steppers();
     }
 
     ShowMotorState();

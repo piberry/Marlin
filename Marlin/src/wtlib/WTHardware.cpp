@@ -65,7 +65,7 @@ void setup_dma_ctl(void)
 
 void host_uart_init(void)
 {
-    host_serial->begin(HOST_BAUDRATE);
+    host_serial->begin(BAUDRATE);
     usart_dev *serial_dev = host_serial->c_dev();
     serial_dev->regs->CR3 = USART_CR3_DMAR;     // dma enable receive
 }
@@ -88,6 +88,7 @@ void SerialInit(void)
 
 #ifdef DMA_RX_SUPPORT
 
+MSerialT MSerial1(false, USART1, BOARD_USART1_TX_PIN, BOARD_USART1_RX_PIN);
 extern "C" void __irq_usart1(void) 
 {
     uint8_t clear; 
@@ -118,6 +119,7 @@ extern "C" void __irq_usart1(void)
     }
 }
 
+MSerialT MSerial2(true, USART1, BOARD_USART2_TX_PIN, BOARD_USART2_RX_PIN);
 extern "C" void __irq_usart2(void) 
 {
     uint8_t clear;  

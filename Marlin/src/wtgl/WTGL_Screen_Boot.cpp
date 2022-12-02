@@ -6,7 +6,7 @@
 #include "../../sd/cardreader.h"
 #include "../module/planner.h"
 #include "../feature/powerloss.h"
-#include "../module/configuration_store.h"
+#include "../module/settings.h"
 #include "WTGL_Screen_Boot.h"
 #include "WTGL_Serial.h"
 #include "WTGL_Manager.h"
@@ -19,7 +19,7 @@ void WTGL_Screen_Boot::Init()
 {
 	// SERIAL_ECHOLNPGM("load screen boot");
 	
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 
 	checkCurrentScreen();
 }
@@ -40,7 +40,7 @@ void WTGL_Screen_Boot::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_len
 {
 	if (addr == ADDR_GLOBLE_CURRENT)
 	{
-		if (data[0] != 0x0 && wtvar_gohome == 0)
+		if (data[0] != 0x0 && wtgl.wtvar_gohome == 0)
 		{ 
 			wtgl.ResetScreen();
 			safe_delay(5000);
@@ -50,17 +50,17 @@ void WTGL_Screen_Boot::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_len
             safe_delay(4000);
         }
 
-		if (wtvar_gohome == 1)
+		if (wtgl.wtvar_gohome == 1)
         {  
-            wtvar_gohome = 0;
+            wtgl.wtvar_gohome = 0;
             (void)settings.save();
         }
-        else if (wtvar_showWelcome)
+        else if (wtgl.wtvar_showWelcome)
         {  
             wtgl.GotoWizardMenu();
             return;
         }
-        else if (wtvar_enableselftest)
+        else if (wtgl.wtvar_enableselftest)
         {  
             wtgl.GotoSelfTest();
             return;

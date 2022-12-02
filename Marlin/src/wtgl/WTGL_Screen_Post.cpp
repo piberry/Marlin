@@ -24,14 +24,15 @@
 #define Z_WAITING					20000
 
 uint8_t wtgl_ahit, wtgl_bhit, wtgl_chit;
+uint32_t posttime;
 
 void WTGL_Screen_Post::Init()
 {
 	gserial.LoadScreen(SCREEN_POST);
-	holdontime = getcurrenttime();
-	beginTime = getcurrenttime();
-	axisTime = getcurrenttime();
-    posttime = getcurrenttime() + 10000;
+	holdontime = wtgl.getcurrenttime();
+	beginTime = wtgl.getcurrenttime();
+	axisTime = wtgl.getcurrenttime();
+    posttime = wtgl.getcurrenttime() + 10000;
 
 	nozzleState = SNE_READING;
 	temp_nozzle0 = thermalManager.degHotend(0);
@@ -67,7 +68,7 @@ void WTGL_Screen_Post::Update()
 
 	if (nozzleState == SNE_HEATING)
 	{
-		if ((beginTime + NOZZLE_HEATING_WAITING) > getcurrenttime())
+		if ((beginTime + NOZZLE_HEATING_WAITING) > wtgl.getcurrenttime())
 		{
 			if (temp_nozzle0 >= target_nozzle0)
 			{
@@ -105,7 +106,7 @@ void WTGL_Screen_Post::Update()
     }
 	else if (axisState == SAE_XMOVING)
 	{
-		if ((axisTime + XY_WAITING) > getcurrenttime())
+		if ((axisTime + XY_WAITING) > wtgl.getcurrenttime())
 		{
 			if (wtgl_ahit)
 			{
@@ -123,7 +124,7 @@ void WTGL_Screen_Post::Update()
 	}
 	else if (axisState == SAE_YMOVING)
 	{
-		if ((axisTime + XY_WAITING) > getcurrenttime())
+		if ((axisTime + XY_WAITING) > wtgl.getcurrenttime())
 		{
 			if (wtgl_bhit)
 			{
@@ -141,11 +142,11 @@ void WTGL_Screen_Post::Update()
 	}
 	else if (axisState == SAE_ZMOVING)
 	{
-		if ((axisTime + Z_WAITING) > getcurrenttime())
+		if ((axisTime + Z_WAITING) > wtgl.getcurrenttime())
 		{
 			if (wtgl_chit)
 			{
-                LOOP_XYZ(i) set_axis_is_at_home((AxisEnum)i);
+                LOOP_NUM_AXES(i) set_axis_is_at_home((AxisEnum)i);
 				gserial.SendByte(REG_Z_HOMED, 1);
 				axisState = SAE_END;
 			}

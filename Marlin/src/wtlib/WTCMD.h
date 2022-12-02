@@ -5,12 +5,7 @@
 #ifndef WTCMD_H
 #define WTCMD_H
 
-#include "stdint.h"
-
-#define OCTOPRINT_IDLE		0
-#define OCTOPRINT_PAUSED	1
-#define OCTOPRINT_PRINTING	2
-#define OCTOPRINT_LOST		3
+#include <stdint.h>
 
 #define HOST_WIIBUILDER	0
 #define HOST_SPARK		1

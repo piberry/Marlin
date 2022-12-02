@@ -29,7 +29,7 @@ private:
 	float zoffset_beginZpos;
 	float zoffset_current;
 	millis_t manual_move_start_time = 0;
-	int8_t manual_move_axis = (int8_t)NO_AXIS;
+	int8_t manual_move_axis = (int8_t)NO_AXIS_ENUM;
 };
 
 #endif

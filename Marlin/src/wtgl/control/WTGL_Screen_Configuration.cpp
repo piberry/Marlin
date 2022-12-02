@@ -6,7 +6,7 @@
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
 #include "../../module/planner.h"
-#include "../../module/configuration_store.h"
+#include "../../module/settings.h"
 #include "../../wtlib/WTCMD.h"
 #include "../../gcode/parser.h"
 #include "../../module/probe.h"
@@ -21,7 +21,7 @@ void WTGL_Screen_Configuration::Init()
 	gserial.LoadScreen(SCREEN_CONFIG);
 
 	ShowReport();
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 }
 
 void WTGL_Screen_Configuration::Update()
@@ -95,8 +95,8 @@ void WTGL_Screen_Configuration::ShowReport(void)
 
     wtgl.ShowLogPair("M907 X%ld Y%ld Z%ld E%ld",
                      stepper.motor_current_setting[0],
+					 stepper.motor_current_setting[0], // same as X
 					 stepper.motor_current_setting[1],
-					 stepper.motor_current_setting[2],
-					 stepper.motor_current_setting[3]);
+					 stepper.motor_current_setting[2]);
     safe_delay(300);
 }

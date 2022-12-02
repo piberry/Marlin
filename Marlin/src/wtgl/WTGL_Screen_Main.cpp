@@ -18,7 +18,7 @@ void WTGL_Screen_Main::Init()
 
 	wtgl.ShowTemperature();
 
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 
     wt_machineStatus = WS_IDLE;
 }

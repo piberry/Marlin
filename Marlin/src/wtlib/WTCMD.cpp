@@ -4,13 +4,13 @@
 
 #include "WTCMD.h"
 #include "../gcode/parser.h"
-#include "../HAL/STM32F1/watchdog.h"
+#include "../HAL/STM32F1/HAL.h"
 #include "../sd/cardreader.h"
 #include "../module/printcounter.h"
 #include "../libs/duration_t.h"
 #include "../module/planner.h"
 #include "../module/temperature.h"
-#include "../module/configuration_store.h"
+#include "../module/settings.h"
 #include "../MarlinCore.h"
 #include "../feature/host_actions.h"
 #include "../wtgl/WTGL_Manager.h"
@@ -32,11 +32,7 @@ WT_STATUS wt_machineStatus = WS_IDLE;
 
 WT_MAIN_ACTION wt_mainloop_action = WT_MAIN_ACTION::WMA_IDLE;
 
-uint8_t wt_onlineprinting = OCTOPRINT_LOST;		// 0 = not printing, 1 = paused, 2 = printing, 3 = lost
-
 char parsedString[30];
-
-static xyze_pos_t resume_position;
 
 static void wt_pause_print();
 static void wt_resume_print();
@@ -48,7 +44,7 @@ void GetMachineStatus()
 
 	SERIAL_ECHOPGM(" MFile:");
 	#ifdef SDSUPPORT
-	card.printFilename();
+	card.printSelectedFilename();
 	#endif
 
 	char buffer[21];
@@ -69,7 +65,7 @@ void GetMachineStatus()
 
 void wt_sdcard_stop()
 {
-	card.endFilePrint();
+	card.endFilePrintNow();
 	print_job_timer.stop();
 
 	#if ENABLED(POWER_LOSS_RECOVERY)
@@ -78,7 +74,7 @@ void wt_sdcard_stop()
 
 	wait_for_heatup = false;
 
-	wtvar_gohome = 1;
+	wtgl.wtvar_gohome = 1;
 	(void)settings.save();
 
 	wt_restart();
@@ -104,25 +100,20 @@ void wt_sdcard_pause()
 void wt_sdcard_resume()
 {
 	wt_resume_print();
-
-	card.startFileprint();
-	print_job_timer.start();
-
-	planner.synchronize();
 	
 	wtgl.GotoPrintingMenu();
 
 	wt_machineStatus = WS_PRINTING;
 
   	#ifdef ACTION_ON_RESUMED
-    host_action_resumed();
+    hostui.resumed();
   	#endif
 }
 
 void wt_spark_begin()
 {
-	wt_onlineprinting = OCTOPRINT_PRINTING;
-	gserial.SendByte(REG_OCTOPRINT_STATE,  (uint8_t)wt_onlineprinting);
+	wtgl.wt_onlineprinting = OCTOPRINT_PRINTING;
+	gserial.SendByte(REG_OCTOPRINT_STATE,  (uint8_t)wtgl.wt_onlineprinting);
 	print_job_timer.start();
 
 	#ifdef WTGL_LCD
@@ -135,7 +126,7 @@ void wt_spark_begin()
 void wt_spark_end()
 {
 	wt_machineStatus = WS_FINISH;
-	wt_onlineprinting = OCTOPRINT_IDLE;
+	wtgl.wt_onlineprinting = OCTOPRINT_IDLE;
 	print_job_timer.stop();
 }
 
@@ -149,7 +140,7 @@ void wt_spark_pause()
 	print_job_timer.pause();
 
 	wt_machineStatus = WS_PAUSE;
-	wt_onlineprinting = OCTOPRINT_PAUSED;
+	wtgl.wt_onlineprinting = OCTOPRINT_PAUSED;
 
 	#ifdef WTGL_LCD
 	wtgl.GotoPrintingMenu();
@@ -161,21 +152,49 @@ void wt_spark_pause()
 void wt_spark_resume()
 {
 	wt_resume_print();
-	print_job_timer.start();
-
-	planner.synchronize();
 
 	wt_machineStatus = WS_PRINTING;
-	wt_onlineprinting = OCTOPRINT_PRINTING;
+	wtgl.wt_onlineprinting = OCTOPRINT_PRINTING;
 
 	#ifdef WTGL_LCD
 	wtgl.GotoPrintingMenu();
 	#endif
 }
 
+static bool write_line(char * const buf)
+{
+  char* begin = buf;
+  char* end = buf + strlen(buf) - 1;
+
+  end[1] = '\r';
+  end[2] = '\n';
+  end[3] = '\0';
+
+  return card.write(begin, strlen(buf) + 2) >= 0;
+}
+
+static bool openNewFileWrite(char * const path) 
+{
+  if (!card.isMounted()) return false;
+
+  if (card.fileExists(path))
+	card.removeFile(path);
+
+  card.openFileWrite(path);
+  return true;
+}
+
+static bool openSavFileRead(char * const path) 
+{
+  if (!card.isMounted()) return false;
+
+  card.openFileRead(path);
+  return true;
+}
+
 void wt_save_config()
 {
-	if (!card.openNewFileWrite((char*)SD_CONFIG_FILE))
+	if (!openNewFileWrite((char*)SD_CONFIG_FILE))
 	{
 		SERIAL_ECHOLNPGM("config file open fail!");
 
@@ -189,7 +208,7 @@ void wt_save_config()
 
 	ZERO(buffer);
 	sprintf(buffer, ";%s config data begin", MACHINE_NAME);
-	if (!card.write_line(buffer))
+	if (!write_line(buffer))
 	{
 		SERIAL_ECHOLNPGM("Write to config save file fail.");
 		#ifdef WTGL_LCD
@@ -205,8 +224,8 @@ void wt_save_config()
 					 LINEAR_UNIT(delta_height),
 					 LINEAR_UNIT(delta_tower_angle_trim.a),
 					 LINEAR_UNIT(delta_tower_angle_trim.b),
-					 LINEAR_UNIT(delta_tower_angle_trim.c));
-	if (!card.write_line(buffer))
+					 LINEAR_UNIT(delta_tower_angle_trim.c)); // TODO: add others
+	if (!write_line(buffer))
 	{
 		SERIAL_ECHOLNPGM("Write to config save file fail.");
 		#ifdef WTGL_LCD
@@ -220,7 +239,7 @@ void wt_save_config()
 					 LINEAR_UNIT(delta_endstop_adj.a),
 					 LINEAR_UNIT(delta_endstop_adj.b),
 					 LINEAR_UNIT(delta_endstop_adj.c));
-	if (!card.write_line(buffer))
+	if (!write_line(buffer))
 	{
 		SERIAL_ECHOLNPGM("Write to config save file fail.");
 		#ifdef WTGL_LCD
@@ -234,7 +253,7 @@ void wt_save_config()
 					 LINEAR_UNIT(probe.offset_xy.x),
 					 LINEAR_UNIT(probe.offset_xy.y),
 					 probe.offset.z);
-	if (!card.write_line(buffer))
+	if (!write_line(buffer))
 	{
 		SERIAL_ECHOLNPGM("Write to config save file fail.");
 		#ifdef WTGL_LCD
@@ -246,10 +265,10 @@ void wt_save_config()
 	ZERO(buffer);
 	sprintf(buffer, "M907 X%ld Y%ld Z%ld E%ld",
 					 stepper.motor_current_setting[0],
+					 stepper.motor_current_setting[0], // same as X
 					 stepper.motor_current_setting[1],
-					 stepper.motor_current_setting[2],
-					 stepper.motor_current_setting[3]);
-	if (!card.write_line(buffer))
+					 stepper.motor_current_setting[2]);
+	if (!write_line(buffer))
 	{
 		SERIAL_ECHOLNPGM("Write to config save file fail.");
 		#ifdef WTGL_LCD
@@ -260,7 +279,7 @@ void wt_save_config()
 
 	ZERO(buffer);
 	sprintf(buffer, ";%s config data end", MACHINE_NAME);
-	if (!card.write_line(buffer))
+	if (!write_line(buffer))
 	{
 		SERIAL_ECHOLNPGM("Write to config save file fail.");
 		#ifdef WTGL_LCD
@@ -281,7 +300,7 @@ END:
 
 void wt_load_config()
 {
-	if (!card.openSavFileRead((char*)SD_CONFIG_FILE))
+	if (!openSavFileRead((char*)SD_CONFIG_FILE))
 	{
 		SERIAL_ECHOLNPGM("config file open fail!");
 		#ifdef WTGL_LCD
@@ -343,10 +362,10 @@ void wt_load_config()
 
 void wt_reset_param(void)
 {
-	wtvar_gohome = 0;
-	wtvar_showWelcome = 1;
-	wtvar_enablepowerloss = 0;
-	wtvar_enableselftest = 1;
+	wtgl.wtvar_gohome = 0;
+	wtgl.wtvar_showWelcome = 1;
+	wtgl.wtvar_enablepowerloss = 0;
+	wtgl.wtvar_enableselftest = 1;
 	(void)settings.save();
 
 	safe_delay(200);
@@ -379,11 +398,11 @@ void WTCMD_Process()
 		break;
 
 	case 6:		
-		wt_onlineprinting = OCTOPRINT_IDLE;
+		wtgl.wt_onlineprinting = OCTOPRINT_IDLE;
 		break;
 
 	case 7:		
-		wt_onlineprinting = OCTOPRINT_LOST;
+		wtgl.wt_onlineprinting = OCTOPRINT_LOST;
 		break;
 
 	case 201:	
@@ -437,45 +456,12 @@ void wt_restart()
 
 static void wt_pause_print()
 {
-	xyz_pos_t park_point = NOZZLE_PARK_POINT;
-
-  	resume_position = current_position;
-
-  	planner.synchronize();
-
-	current_position.e += -PAUSE_PARK_RETRACT_LENGTH / planner.e_factor[active_extruder];
-	line_to_current_position(PAUSE_PARK_RETRACT_FEEDRATE);
-	planner.synchronize();
-
-	nozzle.park(2, park_point);
-
-	#if HAS_FILAMENT_SENSOR
-    runout.reset();
-  	#endif
+	pause_print(PAUSE_PARK_RETRACT_LENGTH, NOZZLE_PARK_POINT);
 }
 
 static void wt_resume_print()
 {
-	bool nozzle_timed_out = false;
-	HOTEND_LOOP() {
-		nozzle_timed_out |= thermalManager.hotend_idle[e].timed_out;
-		thermalManager.reset_hotend_idle_timer(e);
-	}
-
-	if (nozzle_timed_out || thermalManager.hotEnoughToExtrude(active_extruder)) 
-		load_filament(0, 0, ADVANCED_PAUSE_PURGE_LENGTH, 0, false, false);
-
-	if (resume_position.e < 0) do_pause_e_move(resume_position.e, feedRate_t(PAUSE_PARK_RETRACT_FEEDRATE));
-
-	do_blocking_move_to_xy(resume_position, feedRate_t(NOZZLE_PARK_XY_FEEDRATE));
-
-	do_blocking_move_to_z(resume_position.z, feedRate_t(NOZZLE_PARK_Z_FEEDRATE));
-
-  	planner.set_e_position_mm((destination.e = current_position.e = resume_position.e));
-
-	#if HAS_FILAMENT_SENSOR
-    runout.reset();
-  	#endif
+	resume_print();
 }
 
 // main loop action
@@ -485,12 +471,12 @@ void wt_loopaction(void)
 
 	if (wt_mainloop_action == WMA_PAUSE)
 	{
-		if (queue.length > 0) return;
+		if (queue.has_commands_queued()) return;
 		
 		wt_pause_print();
 
-		#ifdef ACTION_ON_RESUMED
-		host_action_paused();
+		#ifdef ACTION_ON_PAUSED
+		hostui.paused();
 		#endif
 
 		wt_mainloop_action = WMA_IDLE;
@@ -527,7 +513,7 @@ void wt_unload_sd(void)
 
 void wt_send_queue_length(void)
 {
-    gserial.SendByte(REG_QUEUE_LENGTH, queue.length);
+    gserial.SendByte(REG_QUEUE_LENGTH, queue.ring_buffer.length);
 }
 
 void wt_move_axis(const uint8_t axis, const float distance, const float fr_mm_s)
@@ -540,7 +526,7 @@ void wt_move_axis(const uint8_t axis, const float distance, const float fr_mm_s)
     target[axis] = distance;
 
     // Set delta/cartesian axes directly
-    planner.buffer_segment(target, real_fr_mm_s, 0);
+    planner.buffer_line(target, real_fr_mm_s, 0);
 
 
   planner.synchronize();

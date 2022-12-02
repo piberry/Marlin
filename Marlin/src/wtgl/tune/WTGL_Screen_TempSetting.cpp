@@ -22,7 +22,7 @@ void WTGL_Screen_TempSetting::Init()
 
 	isHeating = false;
 
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 }
 
 void WTGL_Screen_TempSetting::Update()

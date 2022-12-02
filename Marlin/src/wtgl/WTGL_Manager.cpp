@@ -41,6 +41,11 @@ void WTGL_Manager::Init(unsigned long baud, bool doreset)
 	testingMode = false;
 }
 
+uint32_t WTGL_Manager::getcurrenttime() {
+	uint32_t timetmp = millis();
+	return timetmp;
+}
+
 void WTGL_Manager::Update()
 {
 	gserial.Process();

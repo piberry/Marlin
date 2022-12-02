@@ -16,7 +16,7 @@
 
 void WTGL_Screen_Resume::Init()
 {
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 
 	if (card.isMounted())
 	{
@@ -53,9 +53,9 @@ void WTGL_Screen_Resume::Update()
 
 	case DSEP_GOHOME:
 	{
-		if ((planner.has_blocks_queued() == false) && (queue.length == 0))
+		if ((planner.has_blocks_queued() == false) && (!queue.has_commands_queued()))
 		{
-			current_position[Z_AXIS] += recovery.info.zoffset;
+			current_position[Z_AXIS] += recovery.info.zraise;
 			queue.enqueue_now_P(PSTR("M114"));
 
 			queue.enqueue_now_P(PSTR("G1 X0 Y-50 F3000"));
@@ -71,7 +71,7 @@ void WTGL_Screen_Resume::Update()
 
 	case DSEP_HEATING:
 	{
-		if ((planner.has_blocks_queued() == false) && (queue.length == 0))
+		if ((planner.has_blocks_queued() == false) && (!queue.has_commands_queued()))
 		{
 			SERIAL_ECHO("heat");
 			HOTEND_LOOP() 
@@ -108,7 +108,7 @@ void WTGL_Screen_Resume::Update()
 
 	case DSEP_SETPOS:
 	{
-		if ((planner.has_blocks_queued() == false) && (queue.length == 0))
+		if ((planner.has_blocks_queued() == false) && (!queue.has_commands_queued()))
 		{
 			wtgl.ShowLog("Restoring position...");
 			
@@ -137,7 +137,7 @@ void WTGL_Screen_Resume::Update()
 
 	case DSEP_OPENFILE:
 	{
-		if ((planner.has_blocks_queued() == false) && (queue.length == 0))
+		if ((planner.has_blocks_queued() == false) && (!queue.has_commands_queued()))
 		{
 			char *fn = recovery.info.sd_filename;
 			extern const char M23_STR[];
@@ -169,21 +169,21 @@ void WTGL_Screen_Resume::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_l
 
 void WTGL_Screen_Resume::ShowRecoveryInfo()
 {
-    SERIAL_ECHOLNPAIR(" Job Recovery Info...\nvalid_head:", int(recovery.info.valid_head), " valid_foot:", int(recovery.info.valid_foot));
+    SERIAL_ECHOLNPGM(" Job Recovery Info...\nvalid_head:", int(recovery.info.valid_head), " valid_foot:", int(recovery.info.valid_foot));
     if (recovery.info.valid_head) {
       if (recovery.info.valid_head == recovery.info.valid_foot) {
         SERIAL_ECHOPGM("current_position: ");
-        LOOP_XYZE(i) {
+        LOOP_LOGICAL_AXES(i) {
           if (i) SERIAL_CHAR(',');
           SERIAL_ECHO(recovery.info.current_position[i]);
         }
         SERIAL_EOL();
 
-		SERIAL_ECHOLNPAIR("zoffset: ", recovery.info.zoffset);
+		SERIAL_ECHOLNPGM("zoffset: ", recovery.info.zraise);
 
         #if HAS_HOME_OFFSET
           SERIAL_ECHOPGM("home_offset: ");
-          LOOP_XYZ(i) {
+          LOOP_NUM_AXES(i) {
             if (i) SERIAL_CHAR(',');
             SERIAL_ECHO(recovery.info.home_offset[i]);
           }
@@ -192,17 +192,17 @@ void WTGL_Screen_Resume::ShowRecoveryInfo()
 
         #if HAS_POSITION_SHIFT
           SERIAL_ECHOPGM("position_shift: ");
-          LOOP_XYZ(i) {
+          LOOP_NUM_AXES(i) {
             if (i) SERIAL_CHAR(',');
             SERIAL_ECHO(recovery.info.position_shift[i]);
           }
           SERIAL_EOL();
         #endif
 
-        SERIAL_ECHOLNPAIR("feedrate: ", recovery.info.feedrate);
+        SERIAL_ECHOLNPGM("feedrate: ", recovery.info.feedrate);
 
         #if EXTRUDERS > 1
-          SERIAL_ECHOLNPAIR("active_extruder: ", int(info.active_extruder));
+          SERIAL_ECHOLNPGM("active_extruder: ", int(info.active_extruder));
         #endif
 
         #if HOTENDS
@@ -215,7 +215,7 @@ void WTGL_Screen_Resume::ShowRecoveryInfo()
         #endif
 
         #if HAS_HEATED_BED
-          SERIAL_ECHOLNPAIR("target_temperature_bed: ", recovery.info.target_temperature_bed);
+          SERIAL_ECHOLNPGM("target_temperature_bed: ", recovery.info.target_temperature_bed);
         #endif
 
         #if FAN_COUNT
@@ -228,12 +228,12 @@ void WTGL_Screen_Resume::ShowRecoveryInfo()
         #endif
 
         #if HAS_LEVELING
-          SERIAL_ECHOLNPAIR("leveling: ", int(recovery.info.leveling), "\n fade: ", int(recovery.info.fade));
+          SERIAL_ECHOLNPGM("leveling: ", int(recovery.info.flag.leveling), "\n fade: ", int(recovery.info.fade));
         #endif
 
-        SERIAL_ECHOLNPAIR("sd_filename: ", recovery.info.sd_filename);
-        SERIAL_ECHOLNPAIR("sdpos: ", recovery.info.sdpos);
-        SERIAL_ECHOLNPAIR("print_job_elapsed: ", recovery.info.print_job_elapsed);
+        SERIAL_ECHOLNPGM("sd_filename: ", recovery.info.sd_filename);
+        SERIAL_ECHOLNPGM("sdpos: ", recovery.info.sdpos);
+        SERIAL_ECHOLNPGM("print_job_elapsed: ", recovery.info.print_job_elapsed);
       }
       else
         SERIAL_ECHOLNPGM("INVALID DATA");

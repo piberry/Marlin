@@ -26,7 +26,7 @@ void WTGL_Screen_Printing::Init()
 
 	Update();
 
-    holdontime = getcurrenttime();
+    holdontime = wtgl.getcurrenttime();
     pausing = false;
 }
 
@@ -79,7 +79,7 @@ void WTGL_Screen_Printing::Update()
     if (pausing)
     {
         wt_send_queue_length();
-        if (queue.length == 0)
+        if (!queue.has_commands_queued())
             pausing = false;
     }
 }

@@ -20,7 +20,7 @@ void WTGL_Screen_FactoryTest::Init()
 	gserial.LoadScreen(SCREEN_TEST);
 
 	ShowEndstop();
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 	updaterate = 200;
     endstops.enable(true); 
 }

@@ -8,12 +8,12 @@
 #include "../MarlinCore.h"
 #include "WTGL_ScreenBase.h"
 
+#include "tune/WTGL_Screen_Filament.h"
 #include "WTGL_Screen_Main.h"
 #include "tune/WTGL_Screen_Prepare.h"
 #include "control/WTGL_Screen_Control.h"
 #include "print/WTGL_Screen_Printing.h"
 #include "tune/WTGL_Screen_Level.h"
-#include "tune/WTGL_Screen_Filament.h"
 #include "tune/WTGL_Screen_TempSetting.h"
 #include "tune/WTGL_Screen_MotorOff.h"
 #include "WTGL_Screen_Resume.h"
@@ -28,6 +28,11 @@
 
 #define WTGL_PAYLOAD_LENGTH		64
 #define TestError
+
+#define OCTOPRINT_IDLE		0
+#define OCTOPRINT_PAUSED	1
+#define OCTOPRINT_PRINTING	2
+#define OCTOPRINT_LOST		3
 
 typedef struct 
 {
@@ -99,6 +104,16 @@ public:
     void PayloadProcess(uint16_t addr, uint8_t *data, uint8_t data_length);
 	void SendBusy(uint8_t busy);
 
+	uint32_t getcurrenttime();
+	uint32_t holdontime;
+
+	uint8_t wtvar_showWelcome;
+	uint8_t wtvar_gohome;
+	uint8_t wtvar_enablepowerloss;
+	uint8_t wtvar_enableselftest;
+	bool wtvar_uart0_binmode;
+	uint8_t wt_onlineprinting = OCTOPRINT_LOST; // 0 = not printing, 1 = paused, 2 = printing, 3 = lost
+
 	bool busy = false;
 
     uint8_t currentID;
@@ -106,6 +121,8 @@ public:
     wt_job_info_t jobinfo;
 
 private:
+	uint32_t nowtime;
+
 	void InitMenu();
 	void reset();
 	bool testingMode;

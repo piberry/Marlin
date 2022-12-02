@@ -6,7 +6,7 @@
 #include "../../module/temperature.h"
 #include "../../sd/cardreader.h"
 #include "../../module/planner.h"
-#include "../../module/configuration_store.h"
+#include "../../module/settings.h"
 #include "../../module/probe.h"
 #include "WTGL_Screen_ZOffset.h"
 #include "../WTGL_Serial.h"
@@ -21,10 +21,10 @@ void WTGL_Screen_ZOffset::manual_move_to_current(AxisEnum axis)
 void WTGL_Screen_ZOffset::manage_manual_move() 
 {
 
-	if (manual_move_axis != (int8_t)NO_AXIS && ELAPSED(millis(), manual_move_start_time) && !planner.is_full()) 
+	if (manual_move_axis != (int8_t)NO_AXIS_ENUM && ELAPSED(millis(), manual_move_start_time) && !planner.is_full()) 
 	{
 		planner.buffer_line(current_position, planner.settings.max_feedrate_mm_s[Z_AXIS], active_extruder);
-		manual_move_axis = (int8_t)NO_AXIS;
+		manual_move_axis = (int8_t)NO_AXIS_ENUM;
 	}
 }
 
@@ -36,12 +36,12 @@ void WTGL_Screen_ZOffset::Init()
 	queue.enqueue_one_now("G1 Z0 F400");
     wtgl.SendBusy(1);
 
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 	zState = ZOSE_BEGIN;
     updaterate = 200;
 	zoffset_current = probe.offset.z;
 	manual_move_start_time = 0;
-	manual_move_axis = (int8_t)NO_AXIS;
+	manual_move_axis = (int8_t)NO_AXIS_ENUM;
 	ShowZOffset();
 }
 

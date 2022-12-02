@@ -13,7 +13,7 @@
 void WTGL_Screen_Prepare::Init()
 {
 	gserial.LoadScreen(SCREEN_PREPARE);
-	holdontime = getcurrenttime();
+	holdontime = wtgl.getcurrenttime();
 }
 
 void WTGL_Screen_Prepare::Update()
