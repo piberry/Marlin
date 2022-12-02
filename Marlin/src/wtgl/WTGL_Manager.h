@@ -106,6 +106,7 @@ public:
 
 	uint32_t getcurrenttime();
 	uint32_t holdontime;
+	uint32_t nowtime;
 
 	uint8_t wtvar_showWelcome;
 	uint8_t wtvar_gohome;
@@ -121,8 +122,6 @@ public:
     wt_job_info_t jobinfo;
 
 private:
-	uint32_t nowtime;
-
 	void InitMenu();
 	void reset();
 	bool testingMode;

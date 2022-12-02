@@ -58,6 +58,10 @@ void WTGL_Manager::Update()
 		gserial.SendByte(REG_PRINTER_STATE,  (uint8_t)wt_machineStatus);
 		gserial.SendByte(REG_OCTOPRINT_STATE,  (uint8_t)wt_onlineprinting);
 	}
+
+	if (IS_SD_PRINTING()) {
+		GetMachineStatus();
+	}
 }
 
 void WTGL_Manager::InitMenu()

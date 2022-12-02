@@ -3206,6 +3206,7 @@
 #if ENABLED(WTGL_LCD)
   #define DMA_RX_SUPPORT
   #define LCD_BAUDRATE 115200
+  //#define HAS_MULTI_SERIAL 1 // TODO needed to get output to both serial ports for MPMDv2?
 #endif
 //=============================================================================
 //=============================== Extra Features ==============================

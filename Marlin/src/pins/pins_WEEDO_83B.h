@@ -42,10 +42,14 @@
 #define E0_DIR_PIN          PB10
 #define E0_ENABLE_PIN       PB12
 
+#define STEP_TIMER_CHAN     5
+
 // Extruder0
 #define AFAN_PIN            PC3
 #define HEATER_0_PIN        PC2
 #define TEMP_0_PIN          PC1
+
+#define TEMP_TIMER_CHAN     3
 
 // Heater Bed
 #define HEATER_BED_PIN		  PA0
@@ -88,6 +92,7 @@
 #define SPI_SPEED           SPI_EIGHTH_SPEED
 
 #define SD_DETECT_STATE     LOW
+#define SDIO_CLOCK          4500000 // 4.5 MHz
 
 // Motor current PWM pins
 #define MOTOR_CURRENT_PWM_X_PIN     PB9

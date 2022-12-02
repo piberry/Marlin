@@ -43,6 +43,10 @@
   #include "../../feature/bedlevel/bedlevel.h"
 #endif
 
+#ifdef WTGL_LCD
+  #include "../../wtgl/WTGL_Manager.h"
+#endif
+
 constexpr uint8_t _7P_STEP = 1,              // 7-point step - to change number of calibration points
                   _4P_STEP = _7P_STEP * 2,   // 4-point step
                   NPP      = _7P_STEP * 6;   // number of calibration points on the radius
@@ -125,6 +129,15 @@ static void print_calibration_settings(const bool end_stops, const bool tower_an
     SERIAL_ECHOPGM("  Radius:", delta_radius);
 
   SERIAL_EOL();
+
+  #ifdef WTGL_LCD
+  wtgl.ShowLogPair("Height: %.2f Radius: %.2f", delta_height, delta_radius);
+  safe_delay(300);
+  wtgl.ShowLogPair("Endstop offset: X%.2f Y%.2f Z%.2f", delta_endstop_adj.a, delta_endstop_adj.b, delta_endstop_adj.c);
+  safe_delay(300);
+  wtgl.ShowLogPair("Tower trim: X%.2f Y%.2f Z%.2f", delta_tower_angle_trim.a, delta_tower_angle_trim.b, delta_tower_angle_trim.c);
+  safe_delay(300);
+  #endif
 }
 
 /**

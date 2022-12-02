@@ -13,8 +13,6 @@
 
 #define CheckCurrentScreenInterval	2000
 
-extern uint8_t wtvar_skipTest;
-
 void WTGL_Screen_Boot::Init()
 {
 	// SERIAL_ECHOLNPGM("load screen boot");

@@ -1093,6 +1093,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
 
     case 'T': T(parser.codenum); break;                           // Tn: Tool Change
 
+    // TODO: is gcode parsing of 'W' codes via WTCMD_Process() required for MPMDv2?
+
     #if ENABLED(MARLIN_DEV_MODE)
       case 'D': D(parser.codenum); break;                         // Dn: Debug codes
     #endif

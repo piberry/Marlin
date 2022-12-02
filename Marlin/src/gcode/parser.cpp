@@ -174,6 +174,8 @@ void GCodeParser::parse(char *p) {
    */
   switch (letter) {
     case 'G': case 'M': case 'T': TERN_(MARLIN_DEV_MODE, case 'D':) {
+      // TODO: is gcode parsing of 'W' codes required for MPMDv2?
+
       // Skip spaces to get the numeric part
       while (*p == ' ') p++;
 
@@ -275,6 +277,16 @@ void GCodeParser::parse(char *p) {
       return;
     default: break;
   }
+
+  /* TODO: parsing of 'W' codes required for MPMDv2?
+  if (letter == 'W') switch (codenum) {
+    case 205: case 206: case 207: case 208: case 218: case 220: case 223:  
+    case 305: case 307: case 316:
+      string_arg = unescape_string(p);
+      return;
+    default: break;
+  }
+  */
 
   #if ENABLED(DEBUG_GCODE_PARSER)
     const bool debug = codenum == 800;

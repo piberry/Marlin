@@ -102,7 +102,7 @@ void WTGL_Screen_Post::Update()
 
         wtgl_ahit = 0;
         axisState = SAE_XMOVING;
-        homeaxis(A_AXIS);
+		queue.enqueue_now_P(PSTR("G28 X"));
     }
 	else if (axisState == SAE_XMOVING)
 	{
@@ -113,7 +113,7 @@ void WTGL_Screen_Post::Update()
 				gserial.SendByte(REG_X_HOMED, 1);
                 wtgl_bhit = 0;
                 axisState = SAE_YMOVING;
-				homeaxis(B_AXIS);  
+				queue.enqueue_now_P(PSTR("G28 Y"));  
 			}
 		}
 		else
@@ -131,7 +131,7 @@ void WTGL_Screen_Post::Update()
                 gserial.SendByte(REG_Y_HOMED, 1);
                 wtgl_chit = 0;
                 axisState = SAE_ZMOVING;
-				homeaxis(C_AXIS);
+				queue.enqueue_now_P(PSTR("G28 Z"));
 			}
 		}
 		else
