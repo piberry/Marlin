@@ -1913,7 +1913,7 @@
  * Turn on with the command 'M111 S32'.
  * NOTE: Requires a lot of PROGMEM!
  */
-//#define DEBUG_LEVELING_FEATURE
+#define DEBUG_LEVELING_FEATURE
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, PROBE_MANUALLY)
   // Set a height for the start of manual adjustment
@@ -3204,7 +3204,6 @@
 //
 #define WTGL_LCD
 #if ENABLED(WTGL_LCD)
-  #define DMA_RX_SUPPORT
   #define LCD_BAUDRATE 115200
   //#define HAS_MULTI_SERIAL 1 // TODO needed to get output to both serial ports for MPMDv2?
 #endif

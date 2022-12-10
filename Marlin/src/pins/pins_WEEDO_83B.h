@@ -42,24 +42,22 @@
 #define E0_DIR_PIN          PB10
 #define E0_ENABLE_PIN       PB12
 
-#define STEP_TIMER_CHAN     5
-
 // Extruder0
 #define AFAN_PIN            PC3
 #define HEATER_0_PIN        PC2
 #define TEMP_0_PIN          PC1
 
-#define TEMP_TIMER_CHAN     3
+#define MF_TIMER_TEMP       3
 
 // Heater Bed
 #define HEATER_BED_PIN		  PA0
 #define TEMP_BED_PIN          PC0 
 
-#define TEMP_CHAMBER_PIN       TEMP_BED_PIN
+//#define TEMP_CHAMBER_PIN       TEMP_BED_PIN
 
 //#define POWEROFFPIN 28
 
-#define LED_PIN             PC13
+//#define LED_PIN             PC13
 
 // #define B1_PIN              PB14
 // #define B2_PIN              PB13
@@ -89,7 +87,7 @@
 
 #define SDIO_SUPPORT 
 
-#define SPI_SPEED           SPI_EIGHTH_SPEED
+#define SD_SPI_SPEED           SPI_EIGHTH_SPEED
 
 #define SD_DETECT_STATE     LOW
 #define SDIO_CLOCK          4500000 // 4.5 MHz
@@ -108,6 +106,8 @@
 #define EEPROM_START_ADDRESS uint32(0x8000000 + 512 * 1024 - 2 * EEPROM_PAGE_SIZE)
 #undef E2END
 #define E2END                (EEPROM_PAGE_SIZE - 1) // 2KB
+
+#define DISABLE_JTAG
 
 // #define RX_BUFFER_SIZE 512
 

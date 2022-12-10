@@ -88,7 +88,7 @@ void SerialInit(void)
 
 #ifdef DMA_RX_SUPPORT
 
-MSerialT MSerial1(false, USART1, BOARD_USART1_TX_PIN, BOARD_USART1_RX_PIN);
+MSerialT MSerial1(true, USART1, BOARD_USART1_TX_PIN, BOARD_USART1_RX_PIN);
 extern "C" void __irq_usart1(void) 
 {
     uint8_t clear; 
@@ -102,7 +102,7 @@ extern "C" void __irq_usart1(void)
             rb_push_insert(USART1->rb, host_rx_buf[i]); 
 
         clear = USART1_BASE->SR;       
-        clear  =USART1_BASE->DR;       
+        clear = USART1_BASE->DR;       
         clear = clear;                 
 
         dma_disable(DMA1, DMA_CH5);            

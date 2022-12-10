@@ -76,7 +76,7 @@ WTGL_Serial::WTGL_Serial()
 void WTGL_Serial::Init(unsigned long baud)
 {
 #ifndef DMA_RX_SUPPORT
-	LCD_SERIAL.begin(WTGL_BAUDRATE);
+	LCD_SERIAL.begin(BAUDRATE);
     uint32_t serial_connect_timeout = millis() + 1000UL;
     while (!LCD_SERIAL && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
 #endif

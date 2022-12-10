@@ -252,6 +252,10 @@
   #include "tests/marlin_tests.h"
 #endif
 
+#ifdef DMA_RX_SUPPORT
+  #include "wtlib/WTHardware.h"
+#endif
+
 PGMSTR(M112_KILL_STR, "M112 Shutdown");
 
 MarlinState marlin_state = MF_INITIALIZING;
@@ -1160,6 +1164,7 @@ void setup() {
   #endif
   #define SETUP_RUN(C) do{ SETUP_LOG(STRINGIFY(C)); C; }while(0)
 
+  #ifndef DMA_RX_SUPPORT
   MYSERIAL1.begin(BAUDRATE);
   millis_t serial_connect_timeout = millis() + 1000UL;
   while (!MYSERIAL1.connected() && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
@@ -1179,6 +1184,9 @@ void setup() {
       serial_connect_timeout = millis() + 1000UL;
       while (!MYSERIAL3.connected() && PENDING(millis(), serial_connect_timeout)) { /*nada*/ }
     #endif
+  #endif
+  #else
+  SerialInit();
   #endif
   SERIAL_ECHOLNPGM("start");
 
@@ -1648,6 +1656,12 @@ void setup() {
   SETUP_LOG("setup() completed.");
 
   TERN_(MARLIN_TEST_BUILD, runStartupTests());
+
+// init sd control
+  pinMode(STM_SD_CS, OUTPUT);
+  pinMode(STM_SD_BUSY, OUTPUT);
+  digitalWrite(STM_SD_CS,LOW);
+  digitalWrite(STM_SD_BUSY, LOW);
 }
 
 /**
