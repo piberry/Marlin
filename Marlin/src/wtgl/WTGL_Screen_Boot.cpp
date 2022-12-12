@@ -11,12 +11,8 @@
 #include "WTGL_Serial.h"
 #include "WTGL_Manager.h"
 
-#define CheckCurrentScreenInterval	2000
-
 void WTGL_Screen_Boot::Init()
 {
-	// SERIAL_ECHOLNPGM("load screen boot");
-	
 	holdontime = wtgl.getcurrenttime();
 
 	checkCurrentScreen();
@@ -41,11 +37,11 @@ void WTGL_Screen_Boot::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_len
 		if (data[0] != 0x0 && wtgl.wtvar_gohome == 0)
 		{ 
 			wtgl.ResetScreen();
-			safe_delay(5000);
+			TERN_(WTGL_WAIT_FOR_ANIMATION, safe_delay(5000));
 		}
         else
         {   
-            safe_delay(4000);
+            TERN_(WTGL_WAIT_FOR_ANIMATION, safe_delay(4000));
         }
 
 		if (wtgl.wtvar_gohome == 1)

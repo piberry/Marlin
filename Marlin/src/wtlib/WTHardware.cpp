@@ -17,7 +17,7 @@ dma_tube_config host_tube_config;
 dma_tube_config lcd_tube_config;
 
 HardwareSerial *host_serial = &MSerial1;
-HardwareSerial *lcd_serial = &MSerial2;
+HardwareSerial *lcd_serial = &Serial2;
 
 char host_rx_buf[DMA_BUF_SIZE];
 char lcd_rx_buf[DMA_BUF_SIZE];

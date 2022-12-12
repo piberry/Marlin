@@ -54,16 +54,15 @@ namespace ExtUI {
      *   WRITE(pin,value)
      *   READ(pin)
      */
-    SERIAL_ECHOLNPGM("WTGL LCD started...");
-    /*
-    // init sd control
-    pinMode(STM_SD_CS, OUTPUT);
-    pinMode(STM_SD_BUSY, OUTPUT);
-    digitalWrite(STM_SD_CS,LOW);
-    digitalWrite(STM_SD_BUSY, LOW);
-
+    SERIAL_ECHOLNPGM("WTGL LCD starting...");
+    
+    SET_OUTPUT(STM_SD_CS);
+    SET_OUTPUT(STM_SD_BUSY);
+    WRITE(STM_SD_CS, 0);
+    WRITE(STM_SD_BUSY, 0);
+    
     recovery.enable(wtgl.wtvar_enablepowerloss);
-
+    
     queue.enqueue_one_now("M203 Z300");
     if (wtgl.wtvar_gohome == 1)
     {
@@ -74,7 +73,7 @@ namespace ExtUI {
       #endif
     }
 
-    wtgl.Init(LCD_BAUDRATE);
+    wtgl.Init(LCD_BAUDRATE); // baudrate is not used here as DMA is already initialized
     safe_delay(200);
     wtgl.Update();
     safe_delay(200);
@@ -82,15 +81,15 @@ namespace ExtUI {
     wtgl.GotoBootMenu();
     safe_delay(200);
 
-    thermalManager.auto_reporter.report_interval = (uint8_t) 500;
-    //*/
+    thermalManager.auto_reporter.report_interval = (uint8_t) 10; // every 10 seconds
+
+    SERIAL_ECHOLNPGM("WTGL LCD started!");
   }
 
   void onIdle() {
-    /* 
     wtgl.Update();
-    //*/
   }
+
   void onPrinterKilled(FSTR_P const error, FSTR_P const component) {
     /*
     wtgl.EndStopError();

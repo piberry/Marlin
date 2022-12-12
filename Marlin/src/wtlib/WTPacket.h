@@ -10,7 +10,7 @@
 #define END_BYTE 0x0A
 #define MAX_PACKET_PAYLOAD 255
 #define OUT_PACKET_PAYLOAD 96
-#define LCD_SERIAL	MSerial2
+#define LCD_SERIAL Serial2
 #define RECEIVE_TIMEOUT     1000
 
 #include <stdio.h>

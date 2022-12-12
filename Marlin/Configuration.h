@@ -3202,7 +3202,10 @@
 #define WTGL_LCD
 #if ENABLED(WTGL_LCD)
   #define LCD_BAUDRATE 115200
-  //#define HAS_MULTI_SERIAL 1 // TODO needed to get output to both serial ports for MPMDv2?
+
+  // Enable to wait for the display animation to finish. Will skip otherwise.
+  // NOTE: enabling this might connections via UART faulty (i.e. OK response not received for too long)
+  //#define WTGL_WAIT_FOR_ANIMATION
 #endif
 //=============================================================================
 //=============================== Extra Features ==============================

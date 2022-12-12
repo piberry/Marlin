@@ -10,6 +10,8 @@
 #define BOARD_NAME "WEEDO 83B"
 #endif
 
+#define MAPLE_STM32F1
+
 // X Endstop
 #define X_MIN_PIN           -1
 #define X_MAX_PIN           PB3
