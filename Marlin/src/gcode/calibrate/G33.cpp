@@ -130,6 +130,7 @@ static void print_calibration_settings(const bool end_stops, const bool tower_an
 
   SERIAL_EOL();
 
+  /*
   #ifdef WTGL_LCD
   wtgl.ShowLogPair("Height: %.2f Radius: %.2f", delta_height, delta_radius);
   safe_delay(300);
@@ -138,6 +139,7 @@ static void print_calibration_settings(const bool end_stops, const bool tower_an
   wtgl.ShowLogPair("Tower trim: X%.2f Y%.2f Z%.2f", delta_tower_angle_trim.a, delta_tower_angle_trim.b, delta_tower_angle_trim.c);
   safe_delay(300);
   #endif
+  //*/
 }
 
 /**

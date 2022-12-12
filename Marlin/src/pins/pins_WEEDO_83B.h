@@ -57,7 +57,7 @@
 
 //#define POWEROFFPIN 28
 
-//#define LED_PIN             PC13
+#define LED_PIN             PC13
 
 // #define B1_PIN              PB14
 // #define B2_PIN              PB13
@@ -69,11 +69,21 @@
 // #define FIL_RUNOUT_PIN     PB15
 // #define FIL_RUNOUT1_PIN     PB15
 
-#define SD_DETECT_PIN           PB5
-
 //
 // Onboard SD support
 //
+#ifdef BOARD_NR_SPI
+    #undef BOARD_NR_SPI
+#endif
+#define BOARD_NR_SPI 1
+
+#define SD_DETECT_PIN                       PB5
+#define SDCARD_CONNECTION                ONBOARD
+#define ONBOARD_SPI_DEVICE                     1
+#define ONBOARD_SD_CS_PIN                   PC7   // SDSS
+#define SDIO_SUPPORT
+#define NO_SD_HOST_DRIVE                          // This board's SD is only seen by the printer
+
 #define SDIO_D0_PIN        PC8
 #define SDIO_D1_PIN        PC9
 #define SDIO_D2_PIN        PC10
@@ -81,13 +91,11 @@
 #define SDIO_CK_PIN        PC12
 #define SDIO_CMD_PIN       PD2
 
-#define STM_SD_CS         PC7
+#define STM_SD_CS           PC7
 
 #define STM_SD_BUSY         PC6
 
-#define SDIO_SUPPORT 
-
-#define SD_SPI_SPEED           SPI_EIGHTH_SPEED
+#define SD_SPI_SPEED        SPI_EIGHTH_SPEED
 
 #define SD_DETECT_STATE     LOW
 #define SDIO_CLOCK          4500000 // 4.5 MHz

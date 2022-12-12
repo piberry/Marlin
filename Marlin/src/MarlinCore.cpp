@@ -1656,12 +1656,6 @@ void setup() {
   SETUP_LOG("setup() completed.");
 
   TERN_(MARLIN_TEST_BUILD, runStartupTests());
-
-// init sd control
-  pinMode(STM_SD_CS, OUTPUT);
-  pinMode(STM_SD_BUSY, OUTPUT);
-  digitalWrite(STM_SD_CS,LOW);
-  digitalWrite(STM_SD_BUSY, LOW);
 }
 
 /**

@@ -55,8 +55,7 @@ namespace ExtUI {
      *   READ(pin)
      */
     SERIAL_ECHOLNPGM("WTGL LCD started...");
-    SerialInit();
-    
+    /*
     // init sd control
     pinMode(STM_SD_CS, OUTPUT);
     pinMode(STM_SD_BUSY, OUTPUT);
@@ -84,27 +83,44 @@ namespace ExtUI {
     safe_delay(200);
 
     thermalManager.auto_reporter.report_interval = (uint8_t) 500;
+    //*/
   }
 
-  void onIdle() { wtgl.Update(); }
+  void onIdle() {
+    /* 
+    wtgl.Update();
+    //*/
+  }
   void onPrinterKilled(FSTR_P const error, FSTR_P const component) {
+    /*
     wtgl.EndStopError();
     wtgl.ErrorID(3);
     wtgl.ShowErrorMessage((const char *) error);
+    //*/
   }
-  void onMediaInserted() {}
+  void onMediaInserted() {
+    // TODO MPMDv2: maybe set SDIO pins here?
+  }
   void onMediaError() {}
-  void onMediaRemoved() {}
+  void onMediaRemoved() {
+    // TODO MPMDv2: maybe set SDIO pins here?
+  }
   void onPlayTone(const uint16_t frequency, const uint16_t duration) {}
   void onPrintTimerStarted() {
+    /*
     wt_machineStatus = WS_PRINTING;
     wtgl.GotoPrintingMenu();
+    //*/
   }
   void onPrintTimerPaused() {
+    /*
     wt_machineStatus = WS_PAUSE;
+    //*/
   }
   void onPrintTimerStopped() {
+    /*
     wt_machineStatus = WS_ABORT;
+    //*/
   }
   void onFilamentRunout(const extruder_t extruder) {}
   void onUserConfirmRequired(const char * const msg) {
@@ -173,27 +189,35 @@ namespace ExtUI {
   }
 
   void onHomingStart() {
+    /*
     wtgl_ahit = 0;
     wtgl_bhit = 0;
     wtgl_chit = 0;
+    //*/
   }
   void onHomingDone() {
+    /*
     if (TEST(endstops.trigger_state(), X_MAX))
       wtgl_ahit = 1;
     if (TEST(endstops.trigger_state(), Y_MAX))
       wtgl_bhit = 1;
     if (TEST(endstops.trigger_state(), Z_MAX))
       wtgl_chit = 1;
+    //*/
   }
   void onPrintDone() {
+    /*
     wt_machineStatus = WS_FINISH;
+    //*/
   }
 
   void onFactoryReset() {
+    /*
     wtgl.wtvar_gohome = 0;
     wtgl.wtvar_showWelcome = 1;
     wtgl.wtvar_enablepowerloss = 0;
     wtgl.wtvar_enableselftest = 1;
+    //*/
   }
 
   void onStoreSettings(char *buff) {
@@ -204,6 +228,8 @@ namespace ExtUI {
     // Example:
     //  static_assert(sizeof(myDataStruct) <= eeprom_data_size);
     //  memcpy(buff, &myDataStruct, sizeof(myDataStruct));
+
+    /*
 
     // store go home
     memcpy(buff, &wtgl.wtvar_gohome, sizeof(wtgl.wtvar_gohome));
@@ -216,6 +242,8 @@ namespace ExtUI {
 
     // store enable self test
     memcpy(buff, &wtgl.wtvar_enableselftest, sizeof(wtgl.wtvar_enableselftest));
+
+    //*/
   }
 
   void onLoadSettings(const char *buff) {
@@ -226,6 +254,8 @@ namespace ExtUI {
     // Example:
     //  static_assert(sizeof(myDataStruct) <= eeprom_data_size);
     //  memcpy(&myDataStruct, buff, sizeof(myDataStruct));
+
+    /*
 
     // restore go home
     memcpy(&wtgl.wtvar_gohome, buff, sizeof(wtgl.wtvar_gohome));
@@ -246,6 +276,8 @@ namespace ExtUI {
     memcpy(&wtgl.wtvar_enableselftest, buff, sizeof(wtgl.wtvar_enableselftest));
     if (wtgl.wtvar_enableselftest != 0)
       wtgl.wtvar_enableselftest = 1;
+
+    //*/
   }
 
   void onPostprocessSettings() {
