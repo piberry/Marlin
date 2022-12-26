@@ -32,17 +32,18 @@ void WTGL_Screen_Boot::checkCurrentScreen(void)
 
 void WTGL_Screen_Boot::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_length)
 {
-	if (addr == ADDR_GLOBLE_CURRENT)
+	if (addr == ADDR_GLOBAL_CURRENT)
 	{
 		if (data[0] != 0x0 && wtgl.wtvar_gohome == 0)
 		{ 
 			wtgl.ResetScreen();
-			TERN_(WTGL_WAIT_FOR_ANIMATION, safe_delay(5000));
+			TERN_(WTGL_WAIT_FOR_ANIMATION, safe_delay(4000));
 		}
         else
         {   
-            TERN_(WTGL_WAIT_FOR_ANIMATION, safe_delay(4000));
+            TERN_(WTGL_WAIT_FOR_ANIMATION, safe_delay(3000));
         }
+        safe_delay(1000);
 
 		if (wtgl.wtvar_gohome == 1)
         {  

@@ -6,7 +6,7 @@
 #define WTGL_ADDR_H
 
 #define SCREEN_BOOT					0x00    
-#define ADDR_GLOBLE_CURRENT         0x0000  
+#define ADDR_GLOBAL_CURRENT         0x0000  
 #define ADDR_GLOBAL_GOTO            0x0001  
 #define ADDR_GLOBAL_MOUNT_SD        0x0002  
 #define ADDR_GLOBAL_UNMOUNT_SD      0x0003  

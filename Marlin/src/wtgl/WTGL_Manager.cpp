@@ -226,7 +226,7 @@ void WTGL_Manager::ShowTemperature(void)
 
 void WTGL_Manager::PayloadProcess(uint16_t addr, uint8_t *data, uint8_t data_length)
 {
-	if (addr == ADDR_GLOBLE_CURRENT && data_length == 1)
+	if (addr == ADDR_GLOBAL_CURRENT && data_length == 1)
 	{	
 		if (data_length == 1)
 		{

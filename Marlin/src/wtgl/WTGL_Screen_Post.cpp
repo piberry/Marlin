@@ -64,7 +64,7 @@ void WTGL_Screen_Post::Init()
 void WTGL_Screen_Post::Update()
 {
 	temp_nozzle0 = thermalManager.degHotend(0);
-	temp_bed = thermalManager.degBed();
+	//temp_bed = thermalManager.degBed();
 
 	if (nozzleState == SNE_HEATING)
 	{
@@ -100,59 +100,34 @@ void WTGL_Screen_Post::Update()
     {
         if (planner.has_blocks_queued()) return; 
 
-        wtgl_ahit = 0;
-        axisState = SAE_XMOVING;
+        axisState = SAE_MOVING;
 		queue.enqueue_now_P(PSTR("G28 X"));
     }
-	else if (axisState == SAE_XMOVING)
+	else if (axisState == SAE_MOVING)
 	{
 		if ((axisTime + XY_WAITING) > wtgl.getcurrenttime())
 		{
 			if (wtgl_ahit)
 			{
 				gserial.SendByte(REG_X_HOMED, 1);
-                wtgl_bhit = 0;
-                axisState = SAE_YMOVING;
-				queue.enqueue_now_P(PSTR("G28 Y"));  
 			}
-		}
-		else
-		{	
-	        gserial.SendByte(REG_X_HOMED, 2);
-			axisState = SAE_ERROR;
-		}
-	}
-	else if (axisState == SAE_YMOVING)
-	{
-		if ((axisTime + XY_WAITING) > wtgl.getcurrenttime())
-		{
 			if (wtgl_bhit)
 			{
-                gserial.SendByte(REG_Y_HOMED, 1);
-                wtgl_chit = 0;
-                axisState = SAE_ZMOVING;
-				queue.enqueue_now_P(PSTR("G28 Z"));
+				gserial.SendByte(REG_Y_HOMED, 1);
 			}
-		}
-		else
-		{	
-			gserial.SendByte(REG_Y_HOMED, 2);
-			axisState = SAE_ERROR;
-		}
-	}
-	else if (axisState == SAE_ZMOVING)
-	{
-		if ((axisTime + Z_WAITING) > wtgl.getcurrenttime())
-		{
 			if (wtgl_chit)
 			{
-                LOOP_NUM_AXES(i) set_axis_is_at_home((AxisEnum)i);
 				gserial.SendByte(REG_Z_HOMED, 1);
+			}
+			if (wtgl_ahit && wtgl_bhit && wtgl_chit)
+			{
 				axisState = SAE_END;
 			}
 		}
 		else
 		{	
+	        gserial.SendByte(REG_X_HOMED, 2);
+			gserial.SendByte(REG_Y_HOMED, 2);
 			gserial.SendByte(REG_Z_HOMED, 2);
 			axisState = SAE_ERROR;
 		}
@@ -191,16 +166,10 @@ void WTGL_Screen_Post::BedTempError(void)
 
 void WTGL_Screen_Post::EndStopError(void)
 {
-	if (axisState == SAE_XMOVING)
+	if (axisState == SAE_MOVING)
 	{
         gserial.SendByte(REG_X_HOMED, 2);
-	}
-	else if (axisState == SAE_YMOVING)
-	{
-        gserial.SendByte(REG_Y_HOMED, 2);
-	}
-	else if (axisState == SAE_ZMOVING)
-	{
+	    gserial.SendByte(REG_Y_HOMED, 2);
 		gserial.SendByte(REG_Z_HOMED, 2);
 	}
     else if (axisState == SAE_END)

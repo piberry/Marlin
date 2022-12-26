@@ -1,23 +1,30 @@
-/*********************
- * example.cpp *
- *********************/
+/**
+ * Marlin 3D Printer Firmware
+ * Copyright (c) 2020 MarlinFirmware [https://github.com/MarlinFirmware/Marlin]
+ *
+ * Based on Sprinter and grbl.
+ * Copyright (c) 2011 Camiel Gubbels / Erik van der Zalm
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ */
 
-/****************************************************************************
- *   Written By Marcio Teixeira 2018 - Aleph Objects, Inc.                  *
- *                                                                          *
- *   This program is free software: you can redistribute it and/or modify   *
- *   it under the terms of the GNU General Public License as published by   *
- *   the Free Software Foundation, either version 3 of the License, or      *
- *   (at your option) any later version.                                    *
- *                                                                          *
- *   This program is distributed in the hope that it will be useful,        *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of         *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the          *
- *   GNU General Public License for more details.                           *
- *                                                                          *
- *   To view a copy of the GNU General Public License, go to the following  *
- *   location: <https://www.gnu.org/licenses/>.                             *
- ****************************************************************************/
+/**
+ * lcd/extui/wtgl_ui/wtgl_adapter.cpp
+ * 
+ * Adapter for MonoPrice Mini Delta V2 display
+ */
 
 #include "../../../inc/MarlinConfigPre.h"
 
@@ -43,19 +50,19 @@
 
 extern uint8_t wtgl_ahit, wtgl_bhit, wtgl_chit;
 
+struct eeprom_data_t
+{
+    uint8_t gohome = 0,
+     showWelcome = 1,
+     enablepowerloss = 0,
+     enableselftest = 1;
+} eeprom_data;
+
 namespace ExtUI {
   void onStartup() {
-    /* Initialize the display module here. The following
-     * routines are available for access to the GPIO pins:
-     *
-     *   SET_OUTPUT(pin)
-     *   SET_INPUT_PULLUP(pin)
-     *   SET_INPUT(pin)
-     *   WRITE(pin,value)
-     *   READ(pin)
-     */
     SERIAL_ECHOLNPGM("WTGL LCD starting...");
     
+    // SD card init
     SET_OUTPUT(STM_SD_CS);
     SET_OUTPUT(STM_SD_BUSY);
     WRITE(STM_SD_CS, 0);
@@ -97,29 +104,19 @@ namespace ExtUI {
     wtgl.ShowErrorMessage((const char *) error);
     //*/
   }
-  void onMediaInserted() {
-    // TODO MPMDv2: maybe set SDIO pins here?
-  }
+  void onMediaInserted() {}
   void onMediaError() {}
-  void onMediaRemoved() {
-    // TODO MPMDv2: maybe set SDIO pins here?
-  }
+  void onMediaRemoved() {}
   void onPlayTone(const uint16_t frequency, const uint16_t duration) {}
   void onPrintTimerStarted() {
-    /*
     wt_machineStatus = WS_PRINTING;
     wtgl.GotoPrintingMenu();
-    //*/
   }
   void onPrintTimerPaused() {
-    /*
     wt_machineStatus = WS_PAUSE;
-    //*/
   }
   void onPrintTimerStopped() {
-    /*
     wt_machineStatus = WS_ABORT;
-    //*/
   }
   void onFilamentRunout(const extruder_t extruder) {}
   void onUserConfirmRequired(const char * const msg) {
@@ -188,95 +185,56 @@ namespace ExtUI {
   }
 
   void onHomingStart() {
-    /*
     wtgl_ahit = 0;
     wtgl_bhit = 0;
     wtgl_chit = 0;
-    //*/
   }
   void onHomingDone() {
-    /*
-    if (TEST(endstops.trigger_state(), X_MAX))
-      wtgl_ahit = 1;
-    if (TEST(endstops.trigger_state(), Y_MAX))
-      wtgl_bhit = 1;
-    if (TEST(endstops.trigger_state(), Z_MAX))
-      wtgl_chit = 1;
-    //*/
+    wtgl_ahit = 1;
+    wtgl_bhit = 1;
+    wtgl_chit = 1;
   }
   void onPrintDone() {
-    /*
     wt_machineStatus = WS_FINISH;
-    //*/
   }
 
   void onFactoryReset() {
-    /*
     wtgl.wtvar_gohome = 0;
     wtgl.wtvar_showWelcome = 1;
     wtgl.wtvar_enablepowerloss = 0;
     wtgl.wtvar_enableselftest = 1;
-    //*/
   }
 
   void onStoreSettings(char *buff) {
-    // Called when saving to EEPROM (i.e. M500). If the ExtUI needs
-    // permanent data to be stored, it can write up to eeprom_data_size bytes
-    // into buff.
-
-    // Example:
-    //  static_assert(sizeof(myDataStruct) <= eeprom_data_size);
-    //  memcpy(buff, &myDataStruct, sizeof(myDataStruct));
-
-    /*
-
-    // store go home
-    memcpy(buff, &wtgl.wtvar_gohome, sizeof(wtgl.wtvar_gohome));
-
-    // store show welcome
-    memcpy(buff, &wtgl.wtvar_showWelcome, sizeof(wtgl.wtvar_showWelcome));
-
-    // store enable power loss
-    memcpy(buff, &wtgl.wtvar_enablepowerloss, sizeof(wtgl.wtvar_enablepowerloss));
-
-    // store enable self test
-    memcpy(buff, &wtgl.wtvar_enableselftest, sizeof(wtgl.wtvar_enableselftest));
-
-    //*/
+    eeprom_data.gohome = wtgl.wtvar_gohome;
+    eeprom_data.showWelcome = wtgl.wtvar_showWelcome;
+    eeprom_data.enablepowerloss = wtgl.wtvar_enablepowerloss;
+    eeprom_data.enableselftest = wtgl.wtvar_enableselftest;
+    memcpy(buff, &eeprom_data, sizeof(eeprom_data));
   }
 
   void onLoadSettings(const char *buff) {
-    // Called while loading settings from EEPROM. If the ExtUI
-    // needs to retrieve data, it should copy up to eeprom_data_size bytes
-    // from buff
-
-    // Example:
-    //  static_assert(sizeof(myDataStruct) <= eeprom_data_size);
-    //  memcpy(&myDataStruct, buff, sizeof(myDataStruct));
-
-    /*
+    memcpy(&eeprom_data, buff, sizeof(eeprom_data));
 
     // restore go home
-    memcpy(&wtgl.wtvar_gohome, buff, sizeof(wtgl.wtvar_gohome));
+    wtgl.wtvar_gohome = eeprom_data.gohome;
     if (wtgl.wtvar_gohome != 1)
       wtgl.wtvar_gohome = 0;
 
     // restore show welcome
-    memcpy(&wtgl.wtvar_showWelcome, buff, sizeof(wtgl.wtvar_showWelcome));
+    wtgl.wtvar_showWelcome = eeprom_data.showWelcome;
     if (wtgl.wtvar_showWelcome != 0)
       wtgl.wtvar_showWelcome = 1;
 
     // restore enable power loss
-    memcpy(&wtgl.wtvar_enablepowerloss, buff, sizeof(wtgl.wtvar_enablepowerloss));
+    wtgl.wtvar_enablepowerloss = eeprom_data.enablepowerloss;
     if (wtgl.wtvar_enablepowerloss > 1)
       wtgl.wtvar_enablepowerloss = 0;
 
     // restore enable self test
-    memcpy(&wtgl.wtvar_enableselftest, buff, sizeof(wtgl.wtvar_enableselftest));
+    wtgl.wtvar_enableselftest = eeprom_data.enableselftest;
     if (wtgl.wtvar_enableselftest != 0)
       wtgl.wtvar_enableselftest = 1;
-
-    //*/
   }
 
   void onPostprocessSettings() {

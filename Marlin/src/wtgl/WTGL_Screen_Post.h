@@ -39,11 +39,9 @@ private:
 	{
 		SAE_BEGIN = 0,
         SAE_HOMING = 1,
-		SAE_XMOVING = 2,
-		SAE_YMOVING = 3,
-		SAE_ZMOVING = 4,
-		SAE_END =5,
-		SAE_ERROR = 6
+		SAE_MOVING = 2,
+		SAE_END = 3,
+		SAE_ERROR = 4
 	};
 
 	SELFTEST_NOZZLE_ENUM nozzleState;
