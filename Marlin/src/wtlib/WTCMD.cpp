@@ -373,9 +373,9 @@ void wt_reset_param(void)
 }
 
 // W Command Process
-void WTCMD_Process()
+void WTCMD_Process(const uint16_t codenum)
 {
-	switch (parser.codenum)
+	switch (codenum)
 	{
 	case 1:		
 		wt_spark_begin();
@@ -432,17 +432,19 @@ void WTCMD_Process()
 		break;
 
 	case 300:		
-		gserial.SendString(REG_WIFI_SSID, parser.string_arg);
+		// not implemented
+		// gserial.SendString(REG_WIFI_SSID, parser.string_arg);
 		break;
 
-	case 301:		
-		gserial.SendString(REG_WIFI_PWD, parser.string_arg);
+	case 301:
+		// not implemented	
+		// gserial.SendString(REG_WIFI_PWD, parser.string_arg);
 		break;
 
 	case 302:		
+		// not implemented
 		gserial.SendCmd(REG_WIFI_JOIN);
 		break;
-
 	}
 
 }

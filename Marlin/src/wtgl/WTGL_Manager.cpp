@@ -310,7 +310,14 @@ void WTGL_Manager::PayloadProcess(uint16_t addr, uint8_t *data, uint8_t data_len
     }
 	else if (addr == ADDR_GLOBAL_GCODE)
 	{
-		queue.enqueue_one_now((const char*)data);
+		if ((char) *data == 'W') { // specific code for MPMDv2; seems to only come in via Wifi...
+			// Get the code number - integer digits only
+			codenum = 0;
+			do { codenum = codenum * 10 + *data++ - '0'; } while (NUMERIC(*data));
+			WTCMD_Process(codenum);
+		} else {
+			queue.enqueue_one_now((const char*)data);
+		}
 	}
 	else if (addr == VAR_GUIDE_PRINT && screenCurrent != screenWizard)
 	{

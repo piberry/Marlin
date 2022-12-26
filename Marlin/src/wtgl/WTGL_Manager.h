@@ -129,6 +129,7 @@ private:
 	int lasttemp_bed = -1;
 	uint16_t temp_nozzle0;
 	uint16_t temp_bed;
+	uint16_t codenum;
 
 	WTGL_Screen_Main* screenMain;
 	WTGL_Screen_Prepare* screenPrepare;

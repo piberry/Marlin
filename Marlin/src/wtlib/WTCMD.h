@@ -34,7 +34,7 @@ extern WT_MAIN_ACTION wt_mainloop_action;
 void setup_autopoweroffpin();
 #endif
 
-void WTCMD_Process();
+void WTCMD_Process(const uint16_t codenum);
 
 void wt_sdcard_stop();
 
