@@ -57,6 +57,7 @@ void WTGL_Screen_Main::KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_len
     else if (addr == VAR_MAIN_TEST)
     {
         // disabled: wtgl.GotoTestModeMenu();
+        wtgl.GotoSelfTest();
     }
 }
 
