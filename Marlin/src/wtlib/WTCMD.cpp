@@ -78,6 +78,7 @@ void wt_sdcard_stop()
 	queue.enqueue_one_now("G28");
 	queue.enqueue_one_now("M104 S0");
 	queue.enqueue_one_now("M140 S0");
+	queue.enqueue_one_now("M84");
 	wtgl.GotoMain();
 	/*
 	wait_for_heatup = false;
