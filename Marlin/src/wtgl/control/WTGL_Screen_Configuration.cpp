@@ -14,6 +14,7 @@
 #include "WTGL_Screen_Configuration.h"
 #include "../WTGL_Serial.h"
 #include "../WTGL_Manager.h"
+#include "../../wtlib/WTCMD.h"
 
 //
 void WTGL_Screen_Configuration::Init()
@@ -49,11 +50,11 @@ void WTGL_Screen_Configuration::KeyProcess(uint16_t addr, uint8_t *data, uint8_t
     }
     else if (addr == VAR_CONFIG_SAVE)
     {
-        queue.enqueue_one_now("W216");
+        wt_save_config();
     }
     else if (addr == VAR_CONFIG_LOAD)
     {
-        queue.enqueue_one_now("W217");
+        wt_load_config();
     }
 }
 

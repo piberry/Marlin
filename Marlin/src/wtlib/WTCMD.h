@@ -52,6 +52,10 @@ void wt_load_sd(void);
 
 void wt_unload_sd(void);
 
+void wt_save_config();
+
+void wt_load_config();
+
 void wt_send_queue_length(void);
 
 void wt_move_axis(const uint8_t axis, const float distance, const float fr_mm_s);

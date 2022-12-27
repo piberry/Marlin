@@ -107,6 +107,8 @@ namespace ExtUI {
   void onMediaRemoved() {}
   void onPlayTone(const uint16_t frequency, const uint16_t duration) {}
   void onPrintTimerStarted() {
+    if (card.isPrinting())
+      wtgl.jobinfo.filesize = card.getFileSize();
     wt_machineStatus = WS_PRINTING;
     wtgl.GotoPrintingMenu();
   }

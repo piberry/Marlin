@@ -39,6 +39,7 @@ static void wt_resume_print();
 
 void GetMachineStatus()
 {
+	/* it seems this is not needed...
 	SERIAL_ECHOPGM("MStatus:");
 	SERIAL_ECHO(wt_machineStatus);
 
@@ -60,7 +61,9 @@ void GetMachineStatus()
 	#endif
 
 	SERIAL_EOL();
+	//*/
 
+	wtgl.jobinfo.filepos = card.getIndex();
 }
 
 void wt_sdcard_stop()
