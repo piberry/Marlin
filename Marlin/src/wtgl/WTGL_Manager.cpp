@@ -285,8 +285,9 @@ void WTGL_Manager::PayloadProcess(uint16_t addr, uint8_t *data, uint8_t data_len
                 wtgl.GotoControlMenu();
 				break;
 
-			case 0x2E:		
-                wtgl.GotoErrorDiaglogMenu();
+			case 0x2E:
+                // disabled: wtgl.GotoErrorDiaglogMenu();
+				wtgl.GotoSelfTest();
 				break;
 
 			case 0x2F:		
