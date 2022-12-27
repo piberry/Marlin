@@ -117,6 +117,7 @@ namespace ExtUI {
   }
   void onPrintTimerStopped() {
     wt_machineStatus = WS_ABORT;
+    wtgl.GotoMain();
   }
   void onFilamentRunout(const extruder_t extruder) {}
   void onUserConfirmRequired(const char * const msg) {

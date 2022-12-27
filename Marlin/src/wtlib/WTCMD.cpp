@@ -75,12 +75,18 @@ void wt_sdcard_stop()
       recovery.purge();
     #endif
 
+	queue.enqueue_one_now("G28");
+	queue.enqueue_one_now("M104 S0");
+	queue.enqueue_one_now("M140 S0");
+	wtgl.GotoMain();
+	/*
 	wait_for_heatup = false;
 
 	wtgl.wtvar_gohome = 1;
 	(void)settings.save();
 
 	wt_restart();
+	*/
 }
 
 void wt_sdcard_pause()
