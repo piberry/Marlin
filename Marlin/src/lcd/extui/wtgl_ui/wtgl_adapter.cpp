@@ -93,7 +93,11 @@ namespace ExtUI {
     SERIAL_ECHOLNPGM("WTGL LCD started!");
   }
 
-  void onIdle() { wtgl.Update(); }
+  void onIdle() {
+    wtgl.Update();
+    wtgl.setPrintProgress(getProgress_percent());
+    wtgl.setRemainingTime(getProgress_seconds_remaining());
+  }
 
   void onPrinterKilled(FSTR_P const error, FSTR_P const component) {
     /*

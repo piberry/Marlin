@@ -22,7 +22,10 @@ void WTGL_Screen_Printing::Init()
 
 	lasttemp_nozzle0 = -100;
 	lasttemp_bed = -100;
+	percent_current = 0;
 	percent_last = -1;
+	lastPrintTimeLeft = -1;
+	printTimeLeft = -1;
 
 	Update();
 
@@ -54,7 +57,8 @@ void WTGL_Screen_Printing::Update()
 	lasttemp_nozzle0 = temp_nozzle0;
 	lasttemp_bed = temp_bed;
 
-	percent_current = card.percentDone();
+	if (card.isPrinting())
+		percent_current = card.percentDone();
 
 	if (percent_current != percent_last)
 	{
@@ -66,7 +70,14 @@ void WTGL_Screen_Printing::Update()
 	duration_t elapsed = print_job_timer.duration();
     gserial.SendInt32(REG_PRINTING_ELAPSE, elapsed.second());
 
-	if (percent_current == 0 && gcodeinfo.info.i_totaltime > 0)
+	if (printTimeLeft != -1) {
+		if (printTimeLeft != lastPrintTimeLeft) {
+			gserial.SendInt32(REG_PRINTING_REMAIN, printTimeLeft);
+		
+			lastPrintTimeLeft = printTimeLeft;
+		}
+	}
+	else if (percent_current == 0 && gcodeinfo.info.i_totaltime > 0)
 	{
         gserial.SendInt32(REG_PRINTING_REMAIN, gcodeinfo.info.i_totaltime);
 	}
@@ -157,4 +168,12 @@ void WTGL_Screen_Printing::calc_local_printing_time(void)
 		wtgl.jobinfo.printTimeLeft = est_total - wtgl.jobinfo.printTime;
 		if (wtgl.jobinfo.printTimeLeft < 0) wtgl.jobinfo.printTimeLeft = 0;
 	}
+}
+
+void WTGL_Screen_Printing::setPrintProgress(const uint8_t percent) {
+	percent_current = percent;
+}
+
+void WTGL_Screen_Printing::setRemainingTime(const uint32_t remaining) {
+	printTimeLeft = remaining;
 }

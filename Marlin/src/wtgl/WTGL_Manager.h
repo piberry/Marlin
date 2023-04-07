@@ -55,8 +55,8 @@ public:
 	void Init(unsigned long baud, bool doreset = true);
 	void Update();
 
-	void SetFilename(const char* fname);
-	void SetPrintTime(const char* time);
+	void setPrintProgress(const uint8_t percent);
+	void setRemainingTime(const uint32_t remaining);
 
 	void GotoScreen(WTGL_ScreenBase* screen);
 	void LoadSubScreen(WTGL_ScreenBase* screen, WTGL_ScreenBase* parent);

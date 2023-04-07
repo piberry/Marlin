@@ -13,6 +13,8 @@ public:
 	void Init(void);
 	void Update(void);
 	void KeyProcess(uint16_t addr, uint8_t *data, uint8_t data_length);
+	void setPrintProgress(const uint8_t percent);
+	void setRemainingTime(const uint32_t remaining);
 
 private:
 	void calc_local_printing_time(void);
@@ -24,6 +26,8 @@ private:
 	uint8_t percent_current;
 	int percent_last;
     bool pausing;
+	long lastPrintTimeLeft;
+	long printTimeLeft;
 };
 
 

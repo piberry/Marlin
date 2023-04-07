@@ -346,3 +346,11 @@ void WTGL_Manager::SendBusy(uint8_t busy)
 {
 	gserial.SendByte(REG_BUSY, busy);
 }
+
+void WTGL_Manager::setPrintProgress(const uint8_t percent) {
+	screenPrinting->setPrintProgress(percent);
+}
+
+void WTGL_Manager::setRemainingTime(const uint32_t remaining){
+	screenPrinting->setRemainingTime(remaining);
+}
