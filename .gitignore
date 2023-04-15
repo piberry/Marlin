@@ -75,11 +75,6 @@ tags
 *.a
 *.lib
 
-# Executables
-*.exe
-*.out
-*.app
-
 #
 # C
 #
@@ -107,6 +102,7 @@ tags
 
 # Executables
 *.exe
+!WEEDOIAP.exe
 *.out
 *.app
 *.i*86

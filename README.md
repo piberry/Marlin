@@ -1,3 +1,18 @@
+<h1>MPMDv2 Instructions</h1>
+<b>NOTE:</b> use this stuff at your own risk. Upload is only possible on Windows as the Weedo firmware upload tool is only available for that platform.
+<h3>Build instructions</h3>
+<ol>
+  <li>check out this repository in <a href="https://code.visualstudio.com/">VSCode</a></li>
+  <li>download <a href="https://github.com/TheThomasD/Arduino_STM32_MPMDv2/archive/refs/heads/changes_MPMDv2.zip">this zip file</a> from <a href="https://github.com/TheThomasD/Arduino_STM32_MPMDv2">this repository</a> (basically, download the full contents as a zip)</li>
+  <li>take the contents of the zip and extract it into the folder <code>&lt;userdir&gt;\.platformio\packages\framework-arduinoststm32-maple@99.99.99</code> (in Windows: <code>C:\Users\&lt;username&gt;\...</code>, in Linux <code>/home/&lt;username&gt;/...</code>), zip file contents should be directly located in the mentioned folder</li>
+  <li>start the build in VSCode</li>
+  <li>start <a href="WEEDOIAP.exe">this</a> tool (WEEDOIAP.exe) on a Windows machine, connect your printer, select the right COM port</li>
+  <li>select the binary that you built as firmware path (should be located in <code>&lt;location of this repo on your PC&gt;\.pio\build\WEEDOR83\firmware.bin</code> (need to copy it to the Windows machine of course if you built on Linux)</li>
+  <li>start the upload to the printer and wait</li>
+  <li>first thing to do after flashing: run <code>G33</code> delta calibration so that the build height of your printer is correctly set. Also, recalibration is most likely needed.</li>
+  <li>enjoy Marlin 2.1.x on your MPMDv2!</li>
+</ol>
+
 <p align="center"><img src="buildroot/share/pixmaps/logo/marlin-outrun-nf-500.png" height="250" alt="MarlinFirmware's logo" /></p>
 
 <h1 align="center">Marlin 3D Printer Firmware</h1>
