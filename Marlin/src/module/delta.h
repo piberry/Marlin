@@ -34,6 +34,7 @@ extern float delta_radius,
              delta_diagonal_rod,
              segments_per_second;
 extern abc_float_t delta_tower_angle_trim;
+extern abc_float_t delta_tower_radius_trim;
 extern xy_float_t delta_tower[ABC];
 extern abc_float_t delta_diagonal_rod_2_tower;
 extern float delta_clip_start_height;

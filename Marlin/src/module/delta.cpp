@@ -56,6 +56,7 @@ float delta_radius,
       delta_diagonal_rod,
       segments_per_second;
 abc_float_t delta_tower_angle_trim;
+abc_float_t delta_tower_radius_trim;
 xy_float_t delta_tower[ABC];
 abc_float_t delta_diagonal_rod_2_tower;
 float delta_clip_start_height = Z_MAX_POS;
@@ -75,13 +76,12 @@ void refresh_delta_clip_start_height() {
  * settings have been changed (e.g., by M665).
  */
 void recalc_delta_settings() {
-  constexpr abc_float_t trt = DELTA_RADIUS_TRIM_TOWER;
-  delta_tower[A_AXIS].set(cos(RADIANS(210 + delta_tower_angle_trim.a)) * (delta_radius + trt.a), // front left tower
-                          sin(RADIANS(210 + delta_tower_angle_trim.a)) * (delta_radius + trt.a));
-  delta_tower[B_AXIS].set(cos(RADIANS(330 + delta_tower_angle_trim.b)) * (delta_radius + trt.b), // front right tower
-                          sin(RADIANS(330 + delta_tower_angle_trim.b)) * (delta_radius + trt.b));
-  delta_tower[C_AXIS].set(cos(RADIANS( 90 + delta_tower_angle_trim.c)) * (delta_radius + trt.c), // back middle tower
-                          sin(RADIANS( 90 + delta_tower_angle_trim.c)) * (delta_radius + trt.c));
+  delta_tower[A_AXIS].set(cos(RADIANS(210 + delta_tower_angle_trim.a)) * (delta_radius + delta_tower_radius_trim.a), // front left tower
+                          sin(RADIANS(210 + delta_tower_angle_trim.a)) * (delta_radius + delta_tower_radius_trim.a));
+  delta_tower[B_AXIS].set(cos(RADIANS(330 + delta_tower_angle_trim.b)) * (delta_radius + delta_tower_radius_trim.b), // front right tower
+                          sin(RADIANS(330 + delta_tower_angle_trim.b)) * (delta_radius + delta_tower_radius_trim.b));
+  delta_tower[C_AXIS].set(cos(RADIANS( 90 + delta_tower_angle_trim.c)) * (delta_radius + delta_tower_radius_trim.c), // back middle tower
+                          sin(RADIANS( 90 + delta_tower_angle_trim.c)) * (delta_radius + delta_tower_radius_trim.c));
   delta_diagonal_rod_2_tower.set(sq(delta_diagonal_rod + delta_diagonal_rod_trim.a),
                                  sq(delta_diagonal_rod + delta_diagonal_rod_trim.b),
                                  sq(delta_diagonal_rod + delta_diagonal_rod_trim.c));

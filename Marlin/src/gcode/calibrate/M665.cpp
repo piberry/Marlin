@@ -52,6 +52,9 @@
     if (parser.seenval('L')) delta_diagonal_rod        = parser.value_linear_units();
     if (parser.seenval('R')) delta_radius              = parser.value_linear_units();
     if (parser.seenval('S')) segments_per_second       = parser.value_float();
+    if (parser.seenval('U')) delta_tower_radius_trim.a  = parser.value_float();
+    if (parser.seenval('V')) delta_tower_radius_trim.b  = parser.value_float();
+    if (parser.seenval('W')) delta_tower_radius_trim.c  = parser.value_float();
     if (parser.seenval('X')) delta_tower_angle_trim.a  = parser.value_float();
     if (parser.seenval('Y')) delta_tower_angle_trim.b  = parser.value_float();
     if (parser.seenval('Z')) delta_tower_angle_trim.c  = parser.value_float();
@@ -68,6 +71,9 @@
       , PSTR(" R"), LINEAR_UNIT(delta_radius)
       , PSTR(" H"), LINEAR_UNIT(delta_height)
       , PSTR(" S"), segments_per_second
+      , PSTR(" U"), LINEAR_UNIT(delta_tower_radius_trim.a)
+      , PSTR(" V"), LINEAR_UNIT(delta_tower_radius_trim.b)
+      , PSTR(" W"), LINEAR_UNIT(delta_tower_radius_trim.c)
       , SP_X_STR, LINEAR_UNIT(delta_tower_angle_trim.a)
       , SP_Y_STR, LINEAR_UNIT(delta_tower_angle_trim.b)
       , SP_Z_STR, LINEAR_UNIT(delta_tower_angle_trim.c)

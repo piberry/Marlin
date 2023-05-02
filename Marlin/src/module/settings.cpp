@@ -329,6 +329,7 @@ typedef struct SettingsDataStruct {
       float delta_radius,                               // M665 R
             delta_diagonal_rod;                         // M665 L
       abc_float_t delta_tower_angle_trim,               // M665 X Y Z
+                  delta_tower_radius_trim,              // M665 U V W
                   delta_diagonal_rod_trim;              // M665 A B C
     #elif ENABLED(POLARGRAPH)
       xy_pos_t draw_area_min, draw_area_max;            // M665 L R T B
@@ -1016,6 +1017,7 @@ void MarlinSettings::postprocess() {
         EEPROM_WRITE(delta_radius);              // 1 float
         EEPROM_WRITE(delta_diagonal_rod);        // 1 float
         EEPROM_WRITE(delta_tower_angle_trim);    // 3 floats
+        EEPROM_WRITE(delta_tower_radius_trim);    // 3 floats
         EEPROM_WRITE(delta_diagonal_rod_trim);   // 3 floats
       #elif ENABLED(POLARGRAPH)
         _FIELD_TEST(draw_area_min);
@@ -1970,6 +1972,7 @@ void MarlinSettings::postprocess() {
           EEPROM_READ(delta_radius);              // 1 float
           EEPROM_READ(delta_diagonal_rod);        // 1 float
           EEPROM_READ(delta_tower_angle_trim);    // 3 floats
+          EEPROM_READ(delta_tower_radius_trim);    // 3 floats
           EEPROM_READ(delta_diagonal_rod_trim);   // 3 floats
         #elif ENABLED(POLARGRAPH)
           _FIELD_TEST(draw_area_min);
@@ -3046,12 +3049,13 @@ void MarlinSettings::reset() {
   #if IS_KINEMATIC
     segments_per_second = DEFAULT_SEGMENTS_PER_SECOND;
     #if ENABLED(DELTA)
-      const abc_float_t adj = DELTA_ENDSTOP_ADJ, dta = DELTA_TOWER_ANGLE_TRIM, ddr = DELTA_DIAGONAL_ROD_TRIM_TOWER;
+      const abc_float_t adj = DELTA_ENDSTOP_ADJ, dta = DELTA_TOWER_ANGLE_TRIM, dtr = DELTA_RADIUS_TRIM_TOWER, ddr = DELTA_DIAGONAL_ROD_TRIM_TOWER;
       delta_height = DELTA_HEIGHT;
       delta_endstop_adj = adj;
       delta_radius = DELTA_RADIUS;
       delta_diagonal_rod = DELTA_DIAGONAL_ROD;
       delta_tower_angle_trim = dta;
+      delta_tower_radius_trim = dtr;
       delta_diagonal_rod_trim = ddr;
     #elif ENABLED(POLARGRAPH)
       draw_area_min.set(X_MIN_POS, Y_MIN_POS);
