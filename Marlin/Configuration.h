@@ -627,7 +627,7 @@
 #define HEATER_5_MAXTEMP 275
 #define HEATER_6_MAXTEMP 275
 #define HEATER_7_MAXTEMP 275
-#define BED_MAXTEMP      95
+#define BED_MAXTEMP      70
 #define CHAMBER_MAXTEMP  60
 
 /**
@@ -668,9 +668,9 @@
     #define DEFAULT_Kd_LIST { 114.00, 114.00 }
   #else
     // MPMDv2
-    #define DEFAULT_Kp 36.54
-    #define DEFAULT_Ki 5.30
-    #define DEFAULT_Kd 62.95
+    #define DEFAULT_Kp 38.25
+    #define DEFAULT_Ki 5.49
+    #define DEFAULT_Kd 66.66
   #endif
 #endif
 
@@ -755,9 +755,9 @@
   // from FOPDT model - kp=.39 Tp=405 Tdead=66, Tc set to 79.2, aggressive factor of .15 (vs .1, 1, 10)
 
   // MPMDv2
-  #define DEFAULT_bedKp 25
-  #define DEFAULT_bedKi 9.61
-  #define DEFAULT_bedKd 200
+  #define DEFAULT_bedKp 31.55
+  #define DEFAULT_bedKi 5.25
+  #define DEFAULT_bedKd 126.41
 
   // FIND YOUR OWN: "M303 E-1 C8 S90" to run autotune on the bed at 90 degreesC for 8 cycles.
 #endif // PIDTEMPBED
@@ -921,23 +921,23 @@
   #define DELTA_PRINTABLE_RADIUS 56.5    // (mm)
 
   // Center-to-center distance of the holes in the diagonal push rods.
-  #define DELTA_DIAGONAL_ROD 120.0        // (mm)
+  #define DELTA_DIAGONAL_ROD 120.20        // (mm)
 
   // Distance between bed and nozzle Z home position
-  #define DELTA_HEIGHT 120.0278            // (mm) Get this value from G33 auto calibrate
+  #define DELTA_HEIGHT 119.3022            // (mm) Get this value from G33 auto calibrate
 
-  #define DELTA_ENDSTOP_ADJ { 0.0, 0.1523, -0.1956 } // Get these values from G33 auto calibrate
+  #define DELTA_ENDSTOP_ADJ { 0.0, -0.9902, -0.8720 } // Get these values from G33 auto calibrate
 
   // Horizontal distance bridged by diagonal push rods when effector is centered.
-  #define DELTA_RADIUS 60.3487              // (mm) Get this value from G33 auto calibrate
+  #define DELTA_RADIUS 62.0404              // (mm) Get this value from G33 auto calibrate
 
   // Trim adjustments for individual towers
   // tower angle corrections for X and Y tower / rotate XYZ so Z tower angle = 0
   // measured in degrees anticlockwise looking from above the printer
-  #define DELTA_TOWER_ANGLE_TRIM { 0.0693, 0.4109, -0.4802 } // Get these values from G33 auto calibrate
+  #define DELTA_TOWER_ANGLE_TRIM { -0.1273, 0.2436 , -0.1163 } // Get these values from G33 auto calibrate
 
   // Delta radius and diagonal rod adjustments (mm)
-  #define DELTA_RADIUS_TRIM_TOWER { 0.0,	0.9333,	0.2134 }
+  #define DELTA_RADIUS_TRIM_TOWER { 0.0,	0.0,	0.0 }
   #define DELTA_DIAGONAL_ROD_TRIM_TOWER { 0.0, 0.0, 0.0 }
 #endif
 
@@ -1173,7 +1173,7 @@
 #define XYZ_BELT_PITCH 2
 #define XYZ_PULLEY_TEETH 16
 #define XYZ_STEPS (XYZ_FULL_STEPS_PER_ROTATION * XYZ_MICROSTEPS / double(XYZ_BELT_PITCH) / double(XYZ_PULLEY_TEETH))
-#define DEFAULT_AXIS_STEPS_PER_UNIT   { XYZ_STEPS, XYZ_STEPS, XYZ_STEPS, 94.77}
+#define DEFAULT_AXIS_STEPS_PER_UNIT   { XYZ_STEPS, XYZ_STEPS, XYZ_STEPS, 93.28}
 
 /**
  * Default Max Feed Rate (linear=mm/s, rotational=°/s)
@@ -1488,7 +1488,7 @@
  *     |    [-]    |
  *     O-- FRONT --+
  */
-#define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.15 }
+#define NOZZLE_TO_PROBE_OFFSET { 0, 0, 0.4 }
 
 // Most probes should stay away from the edges of the bed, but
 // with NOZZLE_AS_PROBE this can be negative for a wider probing area.
@@ -1917,7 +1917,7 @@
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_UBL, PROBE_MANUALLY)
   // Set a height for the start of manual adjustment
-  #define MANUAL_PROBE_START_Z 0.2  // (mm) Comment out to use the last-measured height
+  #define MANUAL_PROBE_START_Z 0.5  // (mm) Comment out to use the last-measured height
 #endif
 
 #if ANY(MESH_BED_LEVELING, AUTO_BED_LEVELING_BILINEAR, AUTO_BED_LEVELING_UBL)
@@ -3227,7 +3227,7 @@
 
 // Set number of user-controlled fans. Disable to use all board-defined fans.
 // :[1,2,3,4,5,6,7,8]
-//#define NUM_M106_FANS 1
+#define NUM_M106_FANS 1
 
 // Use software PWM to drive the fan, as for the heaters. This uses a very low frequency
 // which is not as annoying as with the hardware PWM. On the other hand, if this frequency

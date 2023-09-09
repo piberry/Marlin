@@ -45,7 +45,10 @@
 #define E0_ENABLE_PIN       PB12
 
 // Extruder0
-#define AFAN_PIN            PC3
+#define FAN_PIN             PC3  // "FAN0"
+// #define FAN1_PIN FAN_PIN         // "FAN1"         
+// #define FAN2_PIN FAN_PIN         // "FAN2"
+// #define AFAN_PIN            PC3
 #define HEATER_0_PIN        PC2
 #define TEMP_0_PIN          PC1
 
